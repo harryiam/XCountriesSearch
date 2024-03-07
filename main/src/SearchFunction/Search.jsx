@@ -1,43 +1,59 @@
-import React, { useEffect, useState } from "react"
-import styles from "./Search.module.css"
-import Card from "../Card/Card"
-import axios from "axios"
+import React, { useEffect, useState } from "react";
+import styles from "./Search.module.css";
+import axios from "axios";
 
-export default function Search(){
+export default function Search() {
+  const [value, setValue] = useState("");
+  const [countries, setCountries] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  useEffect(() => {
+    axios.get("https://restcountries.com/v3.1/all")
+      .then((res) => {
+        setCountries(res.data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        setError("Error fetching data from the server.");
+        setIsLoading(false);
+      });
+  }, []);
 
-    const [value,setValue]=useState('')
-    const [data,setData]=useState([])
+  const handleInputChange = (e) => {
+    setValue(e.target.value);
+  };
 
-    useEffect(()=>{
-        axios.get('https://restcountries.com/v3.1/all').then((res)=>{
-            setData(res.data)
-        }).catch((e)=>{
-            console.error(e)
-        })
-    },[])
+  const filteredCountries = countries.filter((country) =>
+    country.name.common.toLowerCase().includes(value.toLowerCase())
+  );
 
-    useEffect(() => {
-        if (value.trim() === "") {
-          setData(data);
-        } else {
-          const filteredCountries = data.filter((country) =>
-            country.name.common.toLowerCase().includes(value.toLowerCase())
-          );
-          setData(filteredCountries);
-        }
-      }, [value, data]);
-    return(
-        <>
-        <input className={styles.search} type="text" value={value}
-         placeholder="Search any country flag"
-          onChange={(e)=>{setValue(e.target.value)}}>
-          </input>
-          <div className={styles.page}>
-          {data.length>0 ? (data.map((country,index) => (
-          <Card key={index} Src={country.flags.png} Countryname={country.name.common} />
-          ))):(<></>)}
+  return (
+    <div className={styles.container}>
+      <input
+        className={styles.search}
+        type="text"
+        value={value}
+        placeholder="Search any country flag"
+        onChange={handleInputChange}
+      />
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p>{error}</p>
+      ) : filteredCountries.length > 0 ? (
+        <div className={styles.cardsContainer}>
+          {filteredCountries.map((country, index) => (
+            <div key={index} className={`countryCard ${styles.card}`}>
+              <img className={styles.flag} src={country.flags.png} alt={country.name.common} />
+              <div className={styles.countryName}>{country.name.common}</div>
+            </div>
+          ))}
         </div>
-        </>
-    )
+      ) : (
+        <p>No matching countries found.</p>
+      )}
+    </div>
+  );
 }

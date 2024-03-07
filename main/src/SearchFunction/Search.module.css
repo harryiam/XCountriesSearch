@@ -7,3 +7,9 @@
     display: flex;
     flex-wrap: wrap;
 }
+
+.cardsContainer{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
