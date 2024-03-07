@@ -33,10 +33,12 @@ export default function Search(){
          placeholder="Search any country flag"
           onChange={(e)=>{setValue(e.target.value)}}>
           </input>
+          <div className={styles.page}>
           {data.length>0 ? (data.map((country) => (
           <Card Src={country.flags.png} Countryname={country.name.common} />
           ))):(<></>)}
         <Card/>
+        </div>
         </>
     )
 }
