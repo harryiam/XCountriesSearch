@@ -34,8 +34,8 @@ export default function Search(){
           onChange={(e)=>{setValue(e.target.value)}}>
           </input>
           <div className={styles.page}>
-          {data.length>0 ? (data.map((country) => (
-          <Card Src={country.flags.png} Countryname={country.name.common} />
+          {data.length>0 ? (data.map((country,index) => (
+          <Card key={index} Src={country.flags.png} Countryname={country.name.common} />
           ))):(<></>)}
         </div>
         </>
