@@ -37,7 +37,6 @@ export default function Search(){
           {data.length>0 ? (data.map((country) => (
           <Card Src={country.flags.png} Countryname={country.name.common} />
           ))):(<></>)}
-        <Card/>
         </div>
         </>
     )
